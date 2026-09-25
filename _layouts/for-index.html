@@ -1,0 +1,180 @@
+---
+layout: default
+---
+
+<!-- 滚动到顶部和底部按钮 -->
+<style>
+#scroll-buttons {
+  position: fixed;
+  right: 24px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  transition: opacity 0.4s;
+  opacity: 0;
+  pointer-events: none;
+}
+#scroll-buttons.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+#scroll-buttons button {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 10px;
+  margin: 4px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#scroll-buttons button:hover {
+  background: #f0f0f0;
+}
+#scroll-buttons img {
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+}
+</style>
+<div id="scroll-buttons">
+  <button id="scroll-to-top" title="回到顶部">
+    <img src="/img/post_up.svg" alt="Up">
+  </button>
+  <button id="scroll-to-bottom" title="跳到页尾">
+    <img src="/img/post_down.svg" alt="Down">
+  </button>
+</div>
+<script>
+(function() {
+  const scrollButtons = document.getElementById('scroll-buttons');
+  const btnUp = document.getElementById('scroll-to-top');
+  const btnDown = document.getElementById('scroll-to-bottom');
+
+  function toggleButtons() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    // 顶部100像素内和底部100像素内都不显示
+    if (scrollY > 100 && (docHeight - (scrollY + windowHeight) > 100)) {
+      scrollButtons.classList.add('show');
+    } else {
+      scrollButtons.classList.remove('show');
+    }
+  }
+  window.addEventListener('scroll', toggleButtons);
+
+  btnUp.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  btnDown.addEventListener('click', function() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  });
+})();
+</script>
+
+<!-- 禁止页面双指缩放 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<style type="text/css">
+header.intro-header {
+    position: relative;
+    background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}');
+}
+
+{% if site.header-mask %}
+header.intro-header .header-mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: rgba(0,0,0, {{ site.header-mask }});
+}
+{% endif %}
+</style>
+
+<!-- Page Header -->
+<header class="intro-header">
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="site-heading" id="tag-heading">
+                    <h1>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</h1>
+                    <span class="subheading">{{ page.description }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+        <div class="row">
+        {% if site.sidebar == false %}
+<!-- NO SIDEBAR -->
+    <!-- PostList Container -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 postlist-container">
+                {{ content }}
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+
+                <!-- Friends Blog -->
+                {% if site.friends %}
+                <hr>
+                <h5>Special Thanks</h5>
+                <ul class="list-inline">
+                    {% for friend in site.friends %}
+                        <li><a href="{{friend.href}}">{{friend.title}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        {% else %}
+
+<!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+                    <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                postlist-container
+            ">
+                            {{ content }}
+                    </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+
+
+                <!-- Friends Blog -->
+                {% if site.friends %}
+                <hr>
+                <h5>Special Thanks</h5>
+                <ul class="list-inline">
+                    {% for friend in site.friends %}
+                        <li><a href="{{friend.href}}">{{friend.title}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                    </div>
+        {% endif %}
+        </div>
+</div>

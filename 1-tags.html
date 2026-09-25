@@ -1,0 +1,216 @@
+---
+title: Blogs
+layout: default
+description: 您可在此通过Tag分类找到对应Blog
+header-img: "img/tag-bg.jpg"
+---
+
+<!-- 滚动到顶部和底部按钮 -->
+<style>
+#scroll-buttons {
+  position: fixed;
+  right: 24px;
+  bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  transition: opacity 0.4s;
+  opacity: 0;
+  pointer-events: none;
+}
+#scroll-buttons.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+#scroll-buttons button {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 10px;
+  margin: 4px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#scroll-buttons button:hover {
+  background: #f0f0f0;
+}
+#scroll-buttons img {
+  width: 30px;
+  height: 30px;
+  pointer-events: none;
+}
+</style>
+<div id="scroll-buttons">
+  <button id="scroll-to-top" title="回到顶部">
+    <img src="/img/post_up.svg" alt="Up">
+  </button>
+  <button id="scroll-to-bottom" title="跳到页尾">
+    <img src="/img/post_down.svg" alt="Down">
+  </button>
+</div>
+<script>
+(function() {
+  const scrollButtons = document.getElementById('scroll-buttons');
+  const btnUp = document.getElementById('scroll-to-top');
+  const btnDown = document.getElementById('scroll-to-bottom');
+
+  function toggleButtons() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+    // 顶部100像素内和底部100像素内都不显示
+    if (scrollY > 100 && (docHeight - (scrollY + windowHeight) > 100)) {
+      scrollButtons.classList.add('show');
+    } else {
+      scrollButtons.classList.remove('show');
+    }
+  }
+  window.addEventListener('scroll', toggleButtons);
+
+  btnUp.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  btnDown.addEventListener('click', function() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  });
+})();
+</script>
+
+<!-- 禁止页面双指缩放 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<style type="text/css">
+/* 标签云特殊标签样式 */
+.tags .tag-r18,
+a.tag-r18 {
+    background: #e74c3c !important; /* 红色 */
+    color: #fff !important;
+}
+.tags .tag-allage,
+a.tag-allage {
+    background: #27ae60 !important; /* 绿色 */
+    color: #fff !important;
+}
+.special-tag {
+    font-weight: bold;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+/* 新增：header 黑色遮罩 */
+.header-mask {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+.intro-header {
+    position: relative;
+    overflow: hidden;
+}
+.intro-header .container,
+.intro-header .row,
+.intro-header .site-heading {
+    position: relative;
+    z-index: 2;
+}
+</style>
+
+<!-- Page Header -->
+<header class="intro-header" style="background-image: url('{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}');">
+    <div class="header-mask"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="site-heading" id="tag-heading">
+                    <h1>{{ page.title }}</h1>
+                    <span class="subheading">{{ page.description }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+		<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 标签云 -->
+			<div id='tag_cloud' class="tags">
+                {% assign special_tags = "R18,全年龄" | split: "," %}
+                {% for special in special_tags %}
+                    {% if site.tags[special] %}
+                        <a href="#{{ special }}" title="{{ special }}" rel="{{ site.tags[special].size }}" class="special-tag {% if special == 'R18' %}tag-r18{% elsif special == '全年龄' %}tag-allage{% endif %}">{{ special }}</a>
+                    {% endif %}
+                {% endfor %}
+                {% for tag in site.tags %}
+                    {% unless special_tags contains tag[0] %}
+                        <a href="#{{ tag[0] }}" title="{{ tag[0] }}" rel="{{ tag[1].size }}">{{ tag[0] }}</a>
+                    {% endunless %}
+                {% endfor %}
+			</div>
+
+            <!-- 标签列表，顺序与上面一致 -->
+            {% assign special_tags = "R18,全年龄" | split: "," %}
+            {% for special in special_tags %}
+                {% assign tag_posts = site.tags[special] %}
+                {% if tag_posts %}
+                <div class="one-tag-list">
+                    <span class="fa fa-tag listing-seperator" id="{{ special }}">
+                        <span class="tag-text">{{ special }}</span>
+                    </span>
+                    {% for post in tag_posts %}
+                        {% unless post.hide %}
+                        <div class="post-preview">
+                            <a href="{{ post.url | prepend: site.baseurl }}">
+                                <h2 class="post-title">{{ post.title }}</h2>
+                                {% if post.subtitle %}
+                                <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <hr>
+                        {% endunless %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for tag in site.tags %}
+                {% unless special_tags contains tag[0] %}
+                <div class="one-tag-list">
+                    <span class="fa fa-tag listing-seperator" id="{{ tag[0] }}">
+                        <span class="tag-text">{{ tag[0] }}</span>
+                    </span>
+                    {% for post in tag[1] %}
+                        {% unless post.hide %}
+                        <div class="post-preview">
+                            <a href="{{ post.url | prepend: site.baseurl }}">
+                                <h2 class="post-title">{{ post.title }}</h2>
+                                {% if post.subtitle %}
+                                <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <hr>
+                        {% endunless %}
+                    {% endfor %}
+                </div>
+                {% endunless %}
+            {% endfor %}
+
+		</div>
+	</div>
+</div>
