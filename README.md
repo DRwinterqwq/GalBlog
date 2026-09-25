@@ -1,4 +1,4 @@
-# DRwinter的个人博客
+# DRwinterovo的个人GalGame博客
 
 ### 致谢
 
