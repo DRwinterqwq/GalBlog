@@ -1,12 +1,12 @@
 # Site settings
-title: DRwinterovo的个人博客
-SEOTitle: DRwinterovo的个人博客
+title: DRwinterovo的个人GalGame博客
+SEOTitle: DRwinterovo的个人GalGame博客
 header-img: img/index-bg.png
 description: 欢迎来到此博客！
 header-mask: 0.3
 keyword: 
 url: "https://drwinterqwq.github.io"          # your host, for absolute URL
-baseurl: "/Blog"      # for example, '/blog' if your blog hosted on 'host/blog'
+baseurl: "/GalBlog"      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/DRwinterqwq/drwinterqwq.github.io/" # you code repository
 github_username: DRwinterqwq
 
