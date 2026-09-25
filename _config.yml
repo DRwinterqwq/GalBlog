@@ -72,10 +72,5 @@ friends: [
     {
         title: "哔哩哔哩",
         href: "https://bilibili.com/",
-    },
-
-    {
-        title: "TouchGal",
-        href: "https://www.touchgal.us/",
     }
 ]
